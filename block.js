@@ -15,6 +15,7 @@ wp.blocks.registerBlockType( 'mygutb/block', {
             type: 'string',
             source: 'html',
             selector: 'input',
+            default: 'Text Message',
         },
         textColorMessage: {
             type: 'string',
@@ -28,12 +29,11 @@ wp.blocks.registerBlockType( 'mygutb/block', {
             type: 'string',
             dafault: '#ffffff'
         },
-
         textButton: {
             type: 'string',
             sourse: 'html',
             slector: 'a',
-            default: wp.i18n.__('But-Name')
+            default: wp.i18n.__('Button-Name')
         },
         urlButton: {
             type: 'url',
@@ -51,26 +51,36 @@ wp.blocks.registerBlockType( 'mygutb/block', {
             type:'string',
             default: '#000000'
         },
-
          urlImage: {
             type: 'string',
-            // source: 'attribute',
-            // selector: 'img',
-            // attribute: 'src',
-        },
-               
+        },              
 	},
 
 	edit: function( props ) {
-        let onSelectImage = function( media ) {
+        const onSelectImage = function( media ) {
             return props.setAttributes( { urlImage: media.url } );
         }
-        let buttonBackgroundImage = function( obj ) {
+        const deleteImage = function() {
+            if(props.attributes.urlImage) {
+                alert(wp.i18n.__('Are you sure???'));
+                return props.setAttributes( { urlImage: null } );
+            } else { }
+        }
+        const uploadBackgroundImage = function( obj ) {
             return wp.element.createElement( wp.components.Button, {
               className: 'button button-large',
               onClick: obj.open
               },
-              wp.i18n.__( 'Background Image' ),
+              wp.i18n.__( 'Upload Background Image' ),
+          );
+        }
+        const deleteBackgroundImage = function() {
+            return wp.element.createElement( wp.components.Button, {
+              style: { border: "2px solid red" },
+              className: 'button button-large',
+              onClick: deleteImage
+              },
+              wp.i18n.__( 'Delete Background Image' ),
           );
         }
 
@@ -132,7 +142,12 @@ wp.blocks.registerBlockType( 'mygutb/block', {
                             wp.blockEditor.MediaUpload, {
                             onSelect: onSelectImage,
                             value: props.attributes.urlImage,
-                            render: buttonBackgroundImage,
+                            render: uploadBackgroundImage,
+                        } ),
+                        wp.element.createElement(
+                            wp.blockEditor.MediaUpload, {
+                            value: props.attributes.urlImage,
+                            render: deleteBackgroundImage,
                         } ),
                     ),
                     wp.element.createElement(
@@ -140,6 +155,7 @@ wp.blocks.registerBlockType( 'mygutb/block', {
                             type: 'url',
                             label: 'Button Url:',
                             value: props.attributes.urlButton,
+                            placeholder: wp.i18n.__('Enter your url'),
                             onChange: function( newUrlButton ) {
                                 props.setAttributes({ urlButton: newUrlButton });
                             }
@@ -185,7 +201,7 @@ wp.blocks.registerBlockType( 'mygutb/block', {
                                         border: "3px solid" + props.attributes.borderColorButton,
                                         color: props.attributes.textColorButton,
                                     },
-                                    // placeholder: wp.i18n.__("Name Button"),
+                                    placeholder: wp.i18n.__("Enter But Name"),
                                     onChange: function( newTextButton ) {
                                         props.setAttributes( { textButton: newTextButton } );
                                     },
