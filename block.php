@@ -36,3 +36,10 @@ function mygutb_register_block_assets() {
         'render_callback' => 'mygutb-render-callback',
     ) );
 }
+
+add_action('enqueue_block_editor_assets', 'gutenberg_editor_assets');
+
+function gutenberg_editor_assets() {
+    // Load the theme styles within Gutenberg.
+    wp_enqueue_style('my-gutenberg-editor-styles', get_theme_file_uri('/block.css'), FALSE);
+}
